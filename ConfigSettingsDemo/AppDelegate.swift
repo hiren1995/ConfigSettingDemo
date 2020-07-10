@@ -11,10 +11,10 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        //setEnv()
+        setEnvFromSettings()
         return true
     }
 
@@ -32,6 +32,53 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    //MARK: Sets the base url depending upon the type of build schema you selected from top left corner while running the build
+    func setEnv() {
+        #if DEBUG
+            baseURL = "https://www.google.com"
+        #elseif STAGING
+            baseURL = "https://www.facebook.com"
+        #elseif TESTING
+            baseURL = "https://www.linkedin.com"
+        #elseif PRODUCTION
+            baseURL = "https://www.instagram.com"
+        #elseif RELEASE
+            baseURL = "https://www.youtube.com"
+        #endif
+    }
 
+    //MARK: Sets the base url depending upon schema selected in Settings
+    
+    enum UserSchema:String {
+        case debug = "DEBUG"
+        case staging = "STAGING"
+        case testing = "TESTING"
+        case production = "PRODUCTION"
+        case release = "RELEASE"
+    }
+    
+    var userSchema: UserSchema?
+    
+    func setEnvFromSettings() {
+        let userDefaults = UserDefaults.standard
+        let userSchemaStr = userDefaults.string(forKey: "user_type") ?? ""
+        
+        userSchema = UserSchema(rawValue: userSchemaStr)
+        
+        switch userSchema {
+        case .debug:
+            baseURL = "https://www.google.com"
+        case .staging:
+            baseURL = "https://www.facebook.com"
+        case .testing:
+            baseURL = "https://www.linkedin.com"
+        case .production:
+            baseURL = "https://www.instagram.com"
+        case .release:
+            baseURL = "https://www.youtube.com"
+        case .none:
+            baseURL = ""
+        }
+    }
 }
 

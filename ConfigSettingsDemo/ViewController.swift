@@ -7,12 +7,20 @@
 //
 
 import UIKit
+import SafariServices
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        showTutorial()
+    }
+    
+    func showTutorial() {
+        if let url = URL(string: baseURL) {
+            let vc = SFSafariViewController(url: url)
+            self.present(vc, animated: true, completion: nil)
+        }
     }
 
 
